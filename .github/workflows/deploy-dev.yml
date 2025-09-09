@@ -1,0 +1,53 @@
+name: Deploy To Development Server
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_VPS_HOST }}
+          username: ${{ secrets.DEV_VPS_USER }}
+          key: ${{ secrets.DEV_VPS_SSH_PRIVATE_KEY }}
+          script: |
+            # Deploy the code to server
+            cd ${{ secrets.DEV_VPS_PATH }}
+            php artisan down || true
+            git pull origin dev
+            cp .env.example .env
+            sed -i "s|<APP_ENV>|local|g" .env
+            sed -i "s|<APP_DEBUG>|false|g" .env
+            sed -i "s|<RUN_SEEDERS>|false|g" .env
+            sed -i "s|<APP_URL>|https://localhost|g" .env
+            sed -i "s|<APP_KEY>|${{ secrets.DEV_APP_KEY }}|g" .env
+            sed -i "s|<DB_HOST>|${{ secrets.DEV_DB_HOST }}|g" .env
+            sed -i "s|<DB_PORT>|${{ secrets.DEV_DB_PORT }}|g" .env
+            sed -i "s|<DB_DATABASE>|${{ secrets.DEV_DB_DATABASE }}|g" .env
+            sed -i "s|<DB_USERNAME>|${{ secrets.DEV_DB_USERNAME }}|g" .env
+            sed -i "s|<DB_PASSWORD>|${{ secrets.DEV_DB_PASSWORD }}|g" .env
+
+            docker compose exec app composer install --optimize-autoloader --no-interaction --prefer-dist
+
+            # Clear caches
+            docker compose exec app php artisan optimize:clear
+
+            # Run migrations and seeders
+            docker compose exec app php artisan migrate --seed --force
+
+            # Regenerate Filament resources
+            # php artisan shield:generate --all --panel=dashboard
+            # php artisan filament:install
+
+            # Rebuild caches
+            docker compose exec app php artisan optimize
+            docker compose exec app php artisan up
