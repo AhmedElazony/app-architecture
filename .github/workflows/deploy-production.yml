@@ -2,8 +2,8 @@ name: Deploy To Production Server
 
 on:
   push:
-    branches:
-      - master
+    branches: []
+      #- master
 
 jobs:
   deploy:

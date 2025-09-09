@@ -2,8 +2,8 @@ name: Deploy To Development Server
 
 on:
   push:
-    branches:
-      - develop
+    branches: []
+      #- dev
 
 jobs:
   deploy:
