@@ -45,9 +45,7 @@ jobs:
             # Run migrations and seeders
             docker compose exec app php artisan migrate --seed --force
 
-            # Regenerate Filament resources
-            # php artisan shield:generate --all --panel=dashboard
-            # php artisan filament:install
+            # anything you want to add...
 
             # Rebuild caches
             docker compose exec app php artisan optimize
