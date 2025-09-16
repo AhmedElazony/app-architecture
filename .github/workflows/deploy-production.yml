@@ -1,4 +1,4 @@
-name: Deploy To Production Server
+name: Deploy To Production
 
 on:
   workflow_dispatch:
@@ -7,46 +7,29 @@ on:
   #     - master
 
 jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
   deploy:
     runs-on: ubuntu-latest
-
+    needs: [test]
+    if: needs.test.result == 'success'
+    
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@master
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
-            # Deploy the code to server
             cd ${{ secrets.VPS_PATH }}
-            php artisan down || true
+            docker compose exec app php artisan down
             git pull origin master
-            cp .env.example .env
-            sed -i "s|<APP_ENV>|production|g" .env
-            sed -i "s|<APP_DEBUG>|false|g" .env
-            sed -i "s|<RUN_SEEDERS>|false|g" .env
-            sed -i "s|<APP_URL>|${{ secrets.APP_URL }}|g" .env
-            sed -i "s|<APP_KEY>|${{ secrets.APP_KEY }}|g" .env
-            sed -i "s|<DB_HOST>|${{ secrets.DB_HOST }}|g" .env
-            sed -i "s|<DB_PORT>|${{ secrets.DB_PORT }}|g" .env
-            sed -i "s|<DB_DATABASE>|${{ secrets.DB_DATABASE }}|g" .env
-            sed -i "s|<DB_USERNAME>|${{ secrets.DB_USERNAME }}|g" .env
-            sed -i "s|<DB_PASSWORD>|${{ secrets.DB_PASSWORD }}|g" .env
-
-            docker compose exec app composer install --optimize-autoloader --no-interaction --prefer-dist
-
-            # Clear caches
-            docker compose exec app php artisan optimize:clear
-
-            # Run migrations and seeders
-            docker compose exec app php artisan migrate --seed --force
-
-            # anything you want to add...
-
-            # Rebuild caches
+            docker compose exec app composer install --no-dev --optimize-autoloader --no-interaction
+            docker compose exec app php artisan migrate --force
             docker compose exec app php artisan optimize
             docker compose exec app php artisan up
