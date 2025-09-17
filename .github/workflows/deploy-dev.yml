@@ -22,7 +22,7 @@ jobs:
           key: ${{ secrets.DEV_VPS_SSH_PRIVATE_KEY }}
           script: |
             cd ${{ secrets.DEV_VPS_PATH }}
-            git pull origin dev
+            git pull origin develop
             docker compose exec app composer install --optimize-autoloader --no-interaction --prefer-dist
             docker compose exec app php artisan migrate --seed --force
             docker compose exec app php artisan optimize:clear
