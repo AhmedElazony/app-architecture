@@ -198,8 +198,6 @@ You can trigger deployments manually from GitHub Actions tab:
 - Select "Deploy To Production" or "Deploy To Development"
 - Click "Run workflow" button
 
-**Creates**: `app/Domains/User/Models/User.php`
-
 ## Troubleshooting
 
 - Permission issues: If you see storage or bootstrap cache permission errors, ensure `storage/` and `bootstrap/cache` are writable by the webserver or adjust permissions using the included helper scripts in `docker/php/fix-permissions.sh`.
