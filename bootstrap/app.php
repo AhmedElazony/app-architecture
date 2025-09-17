@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        \App\Support\Commands\MakeApiRequest::class,
+        \App\Support\Commands\MakeApiController::class,
+        \App\Support\Commands\MakeApiResource::class,
+        \App\Support\Commands\MakeDomainModel::class,
+    ])
     ->withMiddleware(function (Middleware $middleware): void {
         //
     })

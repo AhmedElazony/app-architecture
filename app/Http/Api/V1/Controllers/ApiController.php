@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\V1\Controllers;
+namespace App\Http\Api\V1\Controllers;
 
 use App\Support\Http\Responses\ApiResponse;
 
-abstract class Controller
+abstract class ApiController
 {
     public function success(?string $message = null, $data = null, int $status = 200, array $extra = [])
     {
