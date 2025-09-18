@@ -15,9 +15,9 @@ class MakeApiController extends ControllerMakeCommand
     {
         $domain = Str::studly($this->argument('domain'));
         $apiVersion = $this->option('api-version');
-        
-        $path = $this->laravel['path'] . '/Http/Api/' . $apiVersion . '/Controllers/' . $domain . '/' . class_basename($name) . '.php';
-        
+
+        $path = $this->laravel['path'].'/Http/Api/'.$apiVersion.'/Controllers/'.$domain.'/'.class_basename($name).'.php';
+
         return $path;
     }
 
@@ -25,28 +25,42 @@ class MakeApiController extends ControllerMakeCommand
     {
         $domain = Str::studly($this->argument('domain'));
         $apiVersion = $this->option('api-version');
-        
-        return $rootNamespace . '\\Http\\Api\\' . $apiVersion . '\\Controllers\\' . $domain;
+
+        return $rootNamespace.'\\Http\\Api\\'.$apiVersion.'\\Controllers\\'.$domain;
     }
 
     protected function buildClass($name)
     {
+        // Get the stub content from parent
         $stub = parent::buildClass($name);
-        
-        // Replace the parent class to use ApiController
         $apiVersion = $this->option('api-version');
-        $stub = str_replace(
-            'use Illuminate\Http\Request;',
-            "use Illuminate\Http\Request;\nuse App\\Http\\Api\\{$apiVersion}\\Controllers\\ApiController;",
-            $stub
-        );
-        
-        $stub = str_replace(
-            'extends Controller',
-            'extends ApiController',
-            $stub
-        );
-        
+
+        // Define our target parent class
+        $apiControllerClass = "App\\Http\\Api\\{$apiVersion}\\Controllers\\ApiController";
+        $apiControllerImport = "use {$apiControllerClass};";
+
+        // Add the ApiController import after namespace
+        if (preg_match('/^(namespace\s+.+?;)(\s*)/m', $stub, $matches)) {
+            $stub = str_replace(
+                $matches[0],
+                $matches[1].$matches[2]."\n".$apiControllerImport."\n",
+                $stub
+            );
+        }
+
+        // Handle the extends clause intelligently
+        if (strpos($stub, 'extends Controller') !== false) {
+            // Laravel found the default Controller and added extends clause
+            $stub = str_replace('extends Controller', 'extends ApiController', $stub);
+        } elseif (strpos($stub, 'extends ') === false) {
+            // No extends clause found, add our own
+            $stub = preg_replace(
+                '/class\s+'.class_basename($name).'\s*\{/',
+                'class '.class_basename($name).' extends ApiController'."\n{",
+                $stub
+            );
+        }
+
         return $stub;
     }
 }
