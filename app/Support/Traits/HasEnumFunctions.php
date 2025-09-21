@@ -21,7 +21,7 @@ trait HasEnumFunctions
      */
     public static function names(): array
     {
-        return array_map(fn($case) => $case->name, self::cases());
+        return array_map(fn ($case) => $case->name, self::cases());
     }
 
     /**

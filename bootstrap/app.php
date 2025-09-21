@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         \App\Support\Commands\MakeApiResource::class,
         \App\Support\Commands\MakeDomainModel::class,
         \App\Support\Commands\MakeDomainPolicy::class,
+        \App\Support\Commands\MakeDomainService::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         //

@@ -81,6 +81,12 @@ php artisan make:api-request Product UpdateProductRequest --api-version=V2
 
 # Force overwrite existing
 php artisan make:api-request User LoginRequest --force
+
+php artisan make:domain-model Product Product
+
+php artisan make:domain-policy Product ProductPolicy
+
+php artisan make:domain-service Product ProductService --bind
 ```
 
 **Creates**: `app/Http/Api/V1/Requests/User/CreateUserRequest.php`

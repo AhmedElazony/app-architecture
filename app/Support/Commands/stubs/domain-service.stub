@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Domains\{{ domain }}\Services\Contracts\{{ service }}Interface;
+
+class {{ class }} implements {{ service }}Interface
+{
+    /**
+     * Create a new service instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+}

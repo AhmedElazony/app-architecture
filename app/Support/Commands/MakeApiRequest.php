@@ -15,9 +15,9 @@ class MakeApiRequest extends RequestMakeCommand
     {
         $domain = Str::studly($this->argument('domain'));
         $apiVersion = $this->option('api-version');
-        
-        $path = $this->laravel['path'] . '/Http/Api/' . $apiVersion . '/Requests/' . $domain . '/' . class_basename($name) . '.php';
-        
+
+        $path = $this->laravel['path'].'/Http/Api/'.$apiVersion.'/Requests/'.$domain.'/'.class_basename($name).'.php';
+
         return $path;
     }
 
@@ -25,7 +25,7 @@ class MakeApiRequest extends RequestMakeCommand
     {
         $domain = Str::studly($this->argument('domain'));
         $apiVersion = $this->option('api-version');
-        
-        return $rootNamespace . '\\Http\\Api\\' . $apiVersion . '\\Requests\\' . $domain;
+
+        return $rootNamespace.'\\Http\\Api\\'.$apiVersion.'\\Requests\\'.$domain;
     }
 }

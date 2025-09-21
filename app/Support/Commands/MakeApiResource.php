@@ -15,9 +15,9 @@ class MakeApiResource extends ResourceMakeCommand
     {
         $domain = Str::studly($this->argument('domain'));
         $apiVersion = $this->option('api-version');
-        
-        $path = $this->laravel['path'] . '/Http/Api/' . $apiVersion . '/Resources/' . $domain . '/' . class_basename($name) . '.php';
-        
+
+        $path = $this->laravel['path'].'/Http/Api/'.$apiVersion.'/Resources/'.$domain.'/'.class_basename($name).'.php';
+
         return $path;
     }
 
@@ -25,7 +25,7 @@ class MakeApiResource extends ResourceMakeCommand
     {
         $domain = Str::studly($this->argument('domain'));
         $apiVersion = $this->option('api-version');
-        
-        return $rootNamespace . '\\Http\\Api\\' . $apiVersion . '\\Resources\\' . $domain;
+
+        return $rootNamespace.'\\Http\\Api\\'.$apiVersion.'\\Resources\\'.$domain;
     }
 }
