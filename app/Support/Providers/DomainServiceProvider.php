@@ -4,7 +4,7 @@ namespace App\Support\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class UserServiceProvider extends ServiceProvider
+class DomainServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

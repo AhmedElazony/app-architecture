@@ -172,7 +172,7 @@ interface {$interfaceName}
     }
 
     /**
-     * Register the service binding in UserServiceProvider
+     * Register the service binding in DomainServiceProvider
      */
     protected function registerServiceBinding()
     {
@@ -182,7 +182,7 @@ interface {$interfaceName}
         $interfaceClass = "App\\Domains\\{$domain}\\Services\\Contracts\\{$service}Interface";
         $serviceClass = "App\\Domains\\{$domain}\\Services\\Database\\{$service}";
 
-        $providerPath = app_path('Support/Providers/UserServiceProvider.php');
+        $providerPath = app_path('Support/Providers/DomainServiceProvider.php');
 
         if (file_exists($providerPath)) {
             $content = file_get_contents($providerPath);
@@ -190,7 +190,7 @@ interface {$interfaceName}
             // Check if binding already exists
             $bindingCheck = "{$service}Interface::class => {$service}::class";
             if (strpos($content, $bindingCheck) !== false) {
-                $this->components->warn('Service binding already exists in UserServiceProvider.');
+                $this->components->warn('Service binding already exists in DomainServiceProvider.');
 
                 return;
             }
@@ -202,12 +202,12 @@ interface {$interfaceName}
             $this->addServiceBinding($content, $service);
 
             file_put_contents($providerPath, $content);
-            $this->components->info('Service binding registered in UserServiceProvider.');
+            $this->components->info('Service binding registered in DomainServiceProvider.');
 
-            // Format the UserServiceProvider with Laravel Pint
+            // Format the DomainServiceProvider with Laravel Pint
             $this->formatWithPint($providerPath);
         } else {
-            $this->components->error('UserServiceProvider not found.');
+            $this->components->error('DomainServiceProvider not found.');
         }
     }
 
@@ -222,7 +222,7 @@ interface {$interfaceName}
             exec("$pintPath $filePath 2>/dev/null", $output, $returnCode);
 
             if ($returnCode === 0) {
-                $this->components->info('UserServiceProvider formatted with Laravel Pint.');
+                $this->components->info('DomainServiceProvider formatted with Laravel Pint.');
             }
         }
     }
