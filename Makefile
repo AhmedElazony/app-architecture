@@ -42,3 +42,17 @@ bash:
 
 fix-permissions:
 	@docker compose run --rm -u "$(UID):$(GID)" app /var/www/html/docker/php/fix-permissions.sh
+
+# Docker management
+up:
+	@echo "🚀 Starting all services..."
+	@docker compose up -d
+	@echo "✅ All services started!"
+
+down:
+	@echo "🛑 Stopping all services..."
+	@docker compose down
+	@echo "✅ All services stopped!"
+
+logs:
+	@docker compose logs -f
