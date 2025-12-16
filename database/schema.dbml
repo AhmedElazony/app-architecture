@@ -1,53 +1,5 @@
 // Enums:
-Enum user_types {
-  trainer
-  trainee
-}
 
-Enum gender {
-  male
-  female
-}
-
-Enum weight_units {
-  lb
-  kg
-}
-
-Enum height_units {
-  cm
-  inch
-}
-
-Enum education_levels {
-  no_formal_education
-  basic_education
-  high_school_or_technical_diploma
-  associate_diploma_2_year_degree
-  bachelor_degree
-  postgraduate_diploma_or_Master_degree
-  doctorate
-  non_academic_professional_certifications
-}
-
-Enum attachment_types {
-  image
-  audio
-  video
-}
-
-Enum booking_statuses {
-  pending
-  paid
-  canceled
-  finished
-}
-
-Enum booking_requests_statuses {
-  accepted
-  pending
-  rejected
-}
 
 // Tables
 Table users {
@@ -55,73 +7,10 @@ Table users {
   name varchar
   email varchar [unique]
   phone varchar [unique]
-  type user_types [default: "trainee"]
   password varchar
   gender gender [default: "male"]
   date_of_birth datetime
   created_at timestamp
 }
 
-Table trainees {
-  user_id bigint [primary key, ref: > users.id]
-  weight int
-  weight_unit weight_units [default: "kg"]
-  height int
-  height_unit height_units [default: "cm"]
-  fitness_goal varchar
-  created_at timestamp
-}
 
-Table trainers {
-  user_id bigint [primary key, ref: > users.id]
-  title varchar
-  experience_years int [default: 0]
-  education_level education_levels [default: "no_formal_education"]
-  have_certificates bool [default: false]
-  created_at timestamp
-}
-
-Table chats {
-  id bigint [primary key]
-  trainer_id bigint [ref: > trainers.user_id]
-  trainee_id bigint [ref: > trainees.user_id]
-  is_active bool [default: false]
-  created_at timestamp
-}
-
-Table messages {
-  id bigint [primary key]
-  chat_id bigint [ref: > chats.id]
-  user_id bigint [ref: > users.id]
-  content text [default: null]
-  attachment text [default: null]
-  attachment_type attachment_types [default: "image"]
-  created_at timestamp
-}
-
-Table packages {
-  id integer [primary key]
-  name varchar
-  price decimal
-  created_at timestamp
-}
-
-Table bookings {
-  id bigint [primary key]
-  trainee_id bigint [ref: > trainees.user_id]
-  trainer_id bigint [ref: > trainers.user_id]
-  package_id integer [ref: > packages.id]
-  status booking_statuses [default: "pinding"]
-  paid_at timestamp
-  ends_at timestamp
-  created_at timestamp
-}
-
-Table booking_requests {
-  id bigint [primary key]
-  trainee_id bigint [ref: > trainees.user_id]
-  trainer_id bigint [ref: > trainers.user_id]
-  package_id integer [ref: > packages.id]
-  status booking_requests_statuses [default: "pending"]
-  created_at timestamp
-}
