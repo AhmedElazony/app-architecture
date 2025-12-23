@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('phone')->unique()->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password');
-            $table->enum('type', ['trainee', 'trainer']);
             $table->enum('gender', ['male', 'female']);
             $table->date('date_of_birth')->nullable();
             $table->rememberToken();
