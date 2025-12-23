@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domains\Management\Enums;
+namespace App\Support\Enums;
 
 use App\Support\Traits\HasEnumFunctions;
 
