@@ -21,4 +21,5 @@ enum ResponseMessageEnum: string
     case FORBIDDEN = 'responses.forbidden';
     case ALREADY_EXISTS = 'responses.already_exists';
     case NOT_FOUND = 'responses.not_found';
+    case METHOD_NOT_ALLOWED = 'responses.method_not_allowed';
 }

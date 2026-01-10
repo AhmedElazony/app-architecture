@@ -14,4 +14,5 @@ return [
     'forbidden' => 'You do not have the necessary permissions to access this resource.',
     'already_exists' => 'The item already exists.',
     'not_found' => 'The item not found.',
+    'method_not_allowed' => 'Method not allowed for this resource.',
 ];
