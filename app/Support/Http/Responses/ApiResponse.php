@@ -4,6 +4,7 @@ namespace App\Support\Http\Responses;
 
 use App\Support\Enums\ResponseMessageEnum;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApiResponse
 {
@@ -23,6 +24,25 @@ class ApiResponse
             'status' => $status,
             'errors' => $errors ?: null,
         ], $extra), $status);
+    }
+
+    public static function paginated(?string $message, int $status, LengthAwarePaginator $data, string $resource): JsonResponse
+    {
+        return self::success(
+            $message ?? __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
+            $resource::collection($data->items()),
+            $status,
+            [
+                'pagination' => [
+                    'current_page' => $data->currentPage(),
+                    'last_page' => $data->lastPage(),
+                    'per_page' => $data->perPage(),
+                    'total' => $data->total(),
+                    'from' => $data->firstItem(),
+                    'to' => $data->lastItem(),
+                ],
+            ],
+        );
     }
 
     public static function savedSuccessfully(): JsonResponse
