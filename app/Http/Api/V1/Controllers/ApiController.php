@@ -3,6 +3,7 @@
 namespace App\Http\Api\V1\Controllers;
 
 use App\Support\Http\Responses\ApiResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class ApiController
 {
@@ -14,5 +15,10 @@ abstract class ApiController
     public function error(?string $message = null, int $status = 500, array $errors = [], array $extra = [])
     {
         return ApiResponse::error($message, $status, $errors, $extra);
+    }
+
+    public function paginated(?string $message, int $status, LengthAwarePaginator $data, string $resource)
+    {
+        return ApiResponse::paginated($message, $status, $data, $resource);
     }
 }

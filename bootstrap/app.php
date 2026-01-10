@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         \App\Support\Commands\MakeDomainService::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->append(\App\Support\Http\Middlewares\HandleLocalization::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
