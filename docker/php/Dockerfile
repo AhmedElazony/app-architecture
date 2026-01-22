@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libonig-dev \
     libxml2-dev \
+    libpq-dev \
     libcurl4-openssl-dev \
     pkg-config \
     libssl-dev \
@@ -31,7 +32,7 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
-        pdo pdo_mysql opcache intl zip exif bcmath gd mbstring xsl pcntl
+        pdo pdo_pgsql pgsql opcache intl zip exif bcmath gd mbstring xsl pcntl
 
 # Install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
