@@ -26,6 +26,18 @@ services:
     depends_on:
       - app
 
+#   frontend:
+#     image: node:20-alpine
+#     container_name: frontend
+#     working_dir: /var/www/html
+#     ports:
+#       - "5173:5173"
+#     volumes:
+#       - ./frontend:/var/www/html
+#     command: sh -c "npm run dev -- --host 0.0.0.0"
+#     environment:
+#       - VITE_API_URL=http://localhost:8080/api/v1
+
   postgres:
     image: postgres:16-alpine
     container_name: postgres
