@@ -18,7 +18,7 @@ images:
 	@docker compose build
 
 install:
-	docker compose run --rm -u "$(UID):$(GID)" app composer install && \
+	@docker compose run --rm -u "$(UID):$(GID)" app composer install && \
 	cp .env.example .env && \
 	docker compose run --rm -u "$(UID):$(GID)" app php artisan key:generate
 
@@ -38,7 +38,7 @@ certs:
 	fi
 
 bash:
-	docker compose run --rm -u "${UID}:${GID}" app bash
+	@docker compose run --rm -u "${UID}:${GID}" app bash
 
 fix-permissions:
 	@docker compose run --rm -u "$(UID):$(GID)" app /var/www/html/docker/php/fix-permissions.sh
@@ -53,6 +53,11 @@ down:
 	@echo "🛑 Stopping all services..."
 	@docker compose down
 	@echo "✅ All services stopped!"
+
+dev:
+    @echo "Starting development environment..."
+    @docker compose up -d
+    @echo "Backend: https://localhost"
 
 logs:
 	@docker compose logs -f
