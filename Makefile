@@ -12,7 +12,7 @@ GID := $(shell id -g)
 
 # MySql Backup config
 # Targets
-.PHONY: images install certs deploy undeploy
+.PHONY: images install certs bash fix-permissions artisan up down dev logs
 
 images:
 	@docker compose build
@@ -43,6 +43,13 @@ bash:
 fix-permissions:
 	@docker compose run --rm -u "$(UID):$(GID)" app /var/www/html/docker/php/fix-permissions.sh
 
+# Artisan Commands
+artisan:
+	@docker compose run --rm -u "$(UID):$(GID)" app php artisan $(filter-out $@,$(MAKECMDGOALS))
+
+%:
+	@:
+
 # Docker management
 up:
 	@echo "🚀 Starting all services..."
@@ -55,9 +62,9 @@ down:
 	@echo "✅ All services stopped!"
 
 dev:
-    @echo "Starting development environment..."
-    @docker compose up -d
-    @echo "Backend: https://localhost"
+	@echo "Starting development environment..."
+	@docker compose up -d
+	@echo "Backend: https://localhost"
 
 logs:
 	@docker compose logs -f
