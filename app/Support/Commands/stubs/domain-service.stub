@@ -2,9 +2,9 @@
 
 namespace {{ namespace }};
 
-use App\Domains\{{ domain }}\Services\Contracts\{{ service }}Interface;
+use App\Domains\{{ domain }}\Services\Contracts\{{ service }} as {{ service }}Contract;
 
-class {{ class }} implements {{ service }}Interface
+class {{ class }} implements {{ service }}Contract
 {
     /**
      * Create a new service instance.

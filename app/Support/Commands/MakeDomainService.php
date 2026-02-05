@@ -16,7 +16,7 @@ class MakeDomainService extends GeneratorCommand
     /**
      * The console command description.
      */
-    protected $description = 'Create a new domain service with interface';
+    protected $description = 'Create a new domain service with contract';
 
     /**
      * The type of class being generated.
@@ -35,8 +35,8 @@ class MakeDomainService extends GeneratorCommand
         $name = $this->qualifyClass($service);
         $path = $this->getPath($name);
 
-        // First, create the interface
-        $this->createInterface();
+        // First, create the contract
+        $this->createContract();
 
         // Then create the service implementation
         if ($this->alreadyExists($service)) {
@@ -60,39 +60,36 @@ class MakeDomainService extends GeneratorCommand
     }
 
     /**
-     * Create the service interface
+     * Create the service contract
      */
-    protected function createInterface()
+    protected function createContract()
     {
         $domain = $this->argument('domain');
         $service = $this->argument('service');
 
-        $interfaceName = $service.'Interface';
-        $interfacePath = app_path("Domains/{$domain}/Services/Contracts/{$interfaceName}.php");
+        $contractPath = app_path("Domains/{$domain}/Services/Contracts/{$service}.php");
 
         // Create directory if it doesn't exist
-        $this->makeDirectory($interfacePath);
+        $this->makeDirectory($contractPath);
 
-        $interfaceContent = $this->buildInterfaceClass($domain, $service);
+        $contractContent = $this->buildContract($domain, $service);
 
-        if (! file_exists($interfacePath)) {
-            file_put_contents($interfacePath, $interfaceContent);
-            $this->components->info("Interface [{$interfacePath}] created successfully.");
+        if (! file_exists($contractPath)) {
+            file_put_contents($contractPath, $contractContent);
+            $this->components->info("Contract [{$contractPath}] created successfully.");
         }
     }
 
     /**
-     * Build the interface class content
+     * Build the contract content
      */
-    protected function buildInterfaceClass($domain, $service)
+    protected function buildContract($domain, $service)
     {
-        $interfaceName = $service.'Interface';
-
         return "<?php
 
 namespace App\\Domains\\{$domain}\\Services\\Contracts;
 
-interface {$interfaceName}
+interface {$service}
 {
     //
 }
@@ -179,7 +176,7 @@ interface {$interfaceName}
         $domain = $this->argument('domain');
         $service = $this->argument('service');
 
-        $interfaceClass = "App\\Domains\\{$domain}\\Services\\Contracts\\{$service}Interface";
+        $contractClass = "App\\Domains\\{$domain}\\Services\\Contracts\\{$service}";
         $serviceClass = "App\\Domains\\{$domain}\\Services\\Database\\{$service}";
 
         $providerPath = app_path('Support/Providers/DomainServiceProvider.php');
@@ -188,7 +185,7 @@ interface {$interfaceName}
             $content = file_get_contents($providerPath);
 
             // Check if binding already exists
-            $bindingCheck = "{$service}Interface::class => {$service}::class";
+            $bindingCheck = "{$service}::class => {$service}::class";
             if (strpos($content, $bindingCheck) !== false) {
                 $this->components->warn('Service binding already exists in DomainServiceProvider.');
 
@@ -196,7 +193,7 @@ interface {$interfaceName}
             }
 
             // Add use statements
-            $this->addUseStatements($content, $interfaceClass, $serviceClass);
+            $this->addUseStatements($content, $contractClass, $serviceClass);
 
             // Add binding to services array
             $this->addServiceBinding($content, $service);
@@ -232,7 +229,7 @@ interface {$interfaceName}
      */
     protected function addServiceBinding(&$content, $service)
     {
-        $binding = "            {$service}Interface::class => {$service}::class,";
+        $binding = "            {$service}Contract::class => {$service}::class,";
 
         // Check if array is empty
         if (preg_match('/\$services = \[\s*\n\s*\]/', $content)) {
@@ -255,30 +252,31 @@ interface {$interfaceName}
     /**
      * Add use statements to the provider file
      */
-    protected function addUseStatements(&$content, $interfaceClass, $serviceClass)
+    protected function addUseStatements(&$content, $contractClass, $serviceClass)
     {
         // Clean the class names (remove leading backslashes)
-        $interfaceClass = ltrim($interfaceClass, '\\');
+        $contractClass = ltrim($contractClass, '\\');
         $serviceClass = ltrim($serviceClass, '\\');
+        $serviceClassShort = class_basename($serviceClass);
 
-        $interfaceUse = "use {$interfaceClass};";
+        $contractUse = "use {$contractClass} as {$serviceClassShort}Contract;";
         $serviceUse = "use {$serviceClass};";
 
-        // Add interface use statement if it doesn't exist
-        if (strpos($content, $interfaceUse) === false) {
+        // Add contract use statement if it doesn't exist
+        if (strpos($content, $contractUse) === false) {
             // Add after ServiceProvider use statement
             $content = preg_replace(
                 '/(use Illuminate\\\\Support\\\\ServiceProvider;\s*\n)/',
-                '$1'.$interfaceUse."\n",
+                '$1'.$contractUse."\n",
                 $content
             );
         }
 
         // Add service use statement if it doesn't exist
         if (strpos($content, $serviceUse) === false) {
-            // Add after the interface use statement
+            // Add after the contract use statement
             $content = preg_replace(
-                '/('.preg_quote($interfaceUse, '/').'\s*\n)/',
+                '/('.preg_quote($contractUse, '/').'\s*\n)/',
                 '$1'.$serviceUse."\n",
                 $content
             );
