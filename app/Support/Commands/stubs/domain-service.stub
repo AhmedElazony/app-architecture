@@ -3,14 +3,16 @@
 namespace {{ namespace }};
 
 use App\Domains\{{ domain }}\Services\Contracts\{{ service }} as {{ service }}Contract;
+use App\Domains\{{ domain }}\Models\{{ model }};
+use App\Support\Services\Database\BaseService;
 
-class {{ class }} implements {{ service }}Contract
+class {{ class }} extends BaseService implements {{ service }}Contract
 {
     /**
      * Create a new service instance.
      */
     public function __construct()
     {
-        //
+        parent::__construct({{ model }}::class);
     }
 }
