@@ -20,20 +20,24 @@ class BaseService implements BaseServiceContract
 
     public function paginate(array $with = [], array $filters = [], int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
     {
-        return $this->model()
-            ->with($with)
-            ->filter($filters)
-            ->latest()
-            ->paginate($perPage, $columns);
+        $query = $this->model()->with($with);
+
+        if (! empty($filters) && method_exists($this->model, 'filter')) {
+            $query->filter($filters);
+        }
+
+        return $query->latest()->paginate($perPage, $columns);
     }
 
     public function get(array $with = [], array $filters = [], array $columns = ['*']): Collection
     {
-        return $this->model()
-            ->with($with)
-            ->filter($filters)
-            ->latest()
-            ->get($columns);
+        $query = $this->model()->with($with);
+
+        if (! empty($filters) && method_exists($this->model, 'filter')) {
+            $query->filter($filters);
+        }
+
+        return $query->latest()->get($columns);
     }
 
     public function findBy(string $field, string $value): Model
