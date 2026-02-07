@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApiResponse
 {
-    public static function success(?string $message = null, $data = null, int $status = 200, array $extra = []): JsonResponse
+    public static function success(?string $message = null, mixed $data = null, int $status = 200, array $extra = []): JsonResponse
     {
         return response()->json(array_merge([
             'message' => $message ?? __(ResponseMessageEnum::SUCCESS->value),
@@ -26,7 +26,7 @@ class ApiResponse
         ], $extra), $status);
     }
 
-    public static function paginated(?string $message, int $status, LengthAwarePaginator $data, string $resource): JsonResponse
+    public static function paginated(LengthAwarePaginator $data, string $resource, ?string $message = null, int $status = 200): JsonResponse
     {
         return self::success(
             $message ?? __(ResponseMessageEnum::FETCHED_SUCCESSFULLY->value),
